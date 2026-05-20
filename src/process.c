@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h> //for rand() function(0~INT_MAX)
+#include "process.h"
+
+#define MAX_TIME 20
+
+int p_index = 0;
+
+struct _process{
+    int process_index;
+    int process_id;
+    unsigned int arrival_time;//job queue
+    unsigned int cpu_burst_time;
+    unsigned int io_start_time;//io interrupt
+    unsigned int io_end_time;
+    int priority;
+
+    unsigned int start_time;//time on running
+    unsigned int end_time;//(might be partial)
+};
+
+Process process_create(){
+    Process p = malloc(sizeof(struct _process));
+    if(p == NULL){
+        printf("Process create failure");
+        exit(EXIT_FAILURE);
+    }
+    //initialize process
+    p->process_index = p_index++;
+    p->process_id = rand();
+    p->arrival_time = rand()%MAX_TIME;
+    p->cpu_burst_time = rand()%MAX_TIME;
+    p->io_start_time = rand()%MAX_TIME;
+    p->io_end_time = rand()%MAX_TIME;
+    p->start_time = 0;
+    p->end_time = 0;
+    //io_start -> io_end
+    if(p->io_end_time < p->io_start_time){
+        int temp = p->io_start_time;
+        p->io_start_time = p->io_end_time;
+        p->io_end_time = temp;
+    }
+    p->priority = rand();
+    
+    return p;
+}
+void process_destroy(Process p){
+    free(p);
+    p = NULL;
+}
+void process_show(Process p){
+    if(p == NULL){
+        return;
+    }
+    printf("process_index is %d\n", p->process_index);
+    printf("process_id is %d\n", p->process_id);
+    printf("arrival_time is %u\n", p->arrival_time);
+    printf("cpu burst time is %u\n", p->cpu_burst_time);
+    printf("io_start_time is %u\n", p->io_start_time);
+    printf("io_end time is %u\n", p->io_end_time);
+    printf("priority is %d\n", p->priority);
+    printf("start time is %u\n", p->start_time);
+    printf("end time is %u\n", p->end_time);
+}
+
+int process_id(Process p){
+    return p->process_id;
+}
+unsigned int process_arrival_time(Process p){
+    return p->arrival_time;
+}
+unsigned int process_cpu_burst_time(Process p){
+    return p->cpu_burst_time;
+}
+unsigned int process_io_start_time(Process p){
+    return p->io_start_time;
+}
+unsigned int process_io_end_time(Process p){
+    return p->io_end_time;
+}
+int process_priority(Process p){
+    return p->priority;
+}
+unsigned int process_start_time(Process p){
+    return p->start_time;
+}
+unsigned int process_end_time(Process p){
+    return p->end_time;
+}
