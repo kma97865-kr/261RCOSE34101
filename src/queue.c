@@ -6,13 +6,14 @@
 
 //Linked list
 struct node{
-    Item data;
+    Process data;
     struct node *next;
 };
 
 struct _queue{ 
     struct node *front; //points to first node
     struct node *rear; //points to last node
+    int count;
 };
 //typedef struct _queue *Queue;
 
@@ -24,6 +25,7 @@ Queue queue_create(void){
     }
     q->front = NULL;
     q->rear = NULL;
+    q->count = 0;
     return q;
 }
 void queue_destroy(Queue *pq){
@@ -33,17 +35,18 @@ void queue_destroy(Queue *pq){
 }
 void queue_make_empty(Queue q){
     while(queue_is_empty(q) == false){
-        Item temp = queue_pop(q);
+        Process temp = queue_pop(q);
         process_destroy(temp);
     }
 }
 bool queue_is_empty(Queue q){
+    if(q == NULL) return true;
     return q->front == NULL;
 }
 bool queue_is_full(Queue q){
     return false;
 }
-void queue_push(Queue q, Item i){
+void queue_push(Queue q, Process i){
     struct node *new_node = malloc(sizeof(struct node));
     if(new_node == NULL){
         printf("node create failure");
@@ -60,22 +63,41 @@ void queue_push(Queue q, Item i){
         q->rear->next = new_node;
         q->rear = new_node;
     }
+    q->count++;
 }
-Item queue_pop(Queue q){
+Process queue_pop(Queue q){
     if(queue_is_empty(q)){
         printf("Queue error : queue is empty");
         exit(EXIT_FAILURE);
     }
     struct node *temp = q->front;
-    Item itemp = temp->data;
+    Process itemp = temp->data;
 
     q->front = q->front->next;
     if(q->front == NULL) q->rear = NULL; //empty
 
     free(temp);
+
+    q->count--;
     return itemp;
 }
 
+//
+Process queue_front(Queue q){
+    if(queue_is_empty(q)) return NULL;
+    return q->front->data;
+}
+
+int queue_count(Queue q){
+    if(queue_is_empty(q)) return 0;
+    return q->count;
+}
+Node queue_front_node(Queue q){
+    if(queue_is_empty(q)) return NULL;
+    return q->front;
+}
+
+//
 void queue_show(Queue q){
     if(q == NULL){
         return;
@@ -85,4 +107,26 @@ void queue_show(Queue q){
         process_show(now_node -> data);
         now_node = now_node -> next;
     }
+}
+
+//
+Process queue_node_get_data(Node n){
+    if(n==NULL) return NULL;
+    return n->data;
+}
+Node queue_node_next_node(Node n){
+    if(n == NULL) return NULL;
+    return n->next;
+}
+
+//
+void queue_node_set_next(Node n1, Node n2){
+    if(n1 == NULL) return;
+    n1 -> next = n2;
+}
+void queue_set_front(Queue q, Node n){
+    q->front = n;
+}
+void queue_set_rear(Queue q, Node n){
+    q->rear = n;
 }

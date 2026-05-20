@@ -19,7 +19,8 @@ int main(void){
 
     config_initialize();
     config_create_process(10);
-    queue_show(job_queue);
+    //queue_show(job_queue);
+    job_queue_sort();
     config_clean();
     
 
