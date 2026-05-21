@@ -11,5 +11,6 @@ extern Process running_process;
 
 void first_come_first_served();
 
+void check_ready_move_running(int time);
 
 #endif

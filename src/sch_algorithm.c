@@ -7,6 +7,16 @@
 #include "running_process.h"
 #include "sch_algorithm.h"
 
+void check_ready_put_running(int time){
+    if(queue_is_empty(ready_queue)) return; //check ready
+        else{ //put runnning
+            Process temp_p = queue_pop(ready_queue);
+            process_set_start_time(temp_p, (unsigned int) time);
+            running_process = temp_p;
+        }
+}
+
+
 /*extern Queue job_queue; arrival_time 대로 정렬
 extern Queue ready_queue; 비어있음
 extern Queue wait_queue; 비어있음(현재 사용하지 않음)
@@ -33,7 +43,7 @@ void first_come_first_served(){
         }
 
         //check running process
-        if(running_process != NULL){ //check whether running_process exits
+        if(running_process != NULL){ //running_process exits
             int remain_time = running_process_time_consume(1);
             if(remain_time > 0){ //still running
                 continue;//do nothing, pass to next time
@@ -44,19 +54,14 @@ void first_come_first_served(){
                 process_set_end_time(running_process, (unsigned int)time);
                 queue_push(terminate_queue, running_process);
                 running_process = NULL;
+                //
+                check_ready_put_running(time);
             }
         }
         else{//running_process is empty
-            //do nothing
+            check_ready_put_running(time);
         }
         
-
-        if(queue_is_empty(ready_queue)) continue;
-        else{
-            Process temp_p = queue_pop(ready_queue);
-            process_set_start_time(temp_p, (unsigned int) time);
-            running_process = temp_p;
-        }
 
         
     }

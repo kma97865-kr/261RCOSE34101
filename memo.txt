@@ -13,7 +13,8 @@
 다음 task : running_process.h, running_process.c
 
 5/21 : running_process.h, running_process.c 완성
-다음 task : FCFS 완성
+다음 task : FCFS 
+이슈: ready_queue에서 running_process로 넘어가는 과정을 함수로 만들어야 할 듯
 
 time = -1
 while (모든 큐가 empty){
