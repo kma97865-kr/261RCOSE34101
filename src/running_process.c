@@ -7,8 +7,8 @@ int running_process_time_consume(int i){
         printf("running_process_time_consume(int) error");
         exit(EXIT_FAILURE);
     }
-    unsigned int u = process_cpu_time_consume(running_process, i);
-    return (int) u;
+    int u = process_cpu_time_consume(running_process, i);
+    return u;
     //-1 : fail to consume
     //0 : no reamining burst time
     //>1 : still running   

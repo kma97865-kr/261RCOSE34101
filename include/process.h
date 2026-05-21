@@ -24,5 +24,7 @@ unsigned int process_end_time(Process p);
 int process_cpu_time_consume(Process p, int i);
 //decrease cpu_burst_time for time i;
 //if fail, return -1. else, return remaining burst time
+void process_set_start_time(Process p, unsigned int u);
+void process_set_end_time(Process p, unsigned int u);
 
 #endif

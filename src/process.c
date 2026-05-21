@@ -62,6 +62,7 @@ void process_show(Process p){
     printf("priority is %d\n", p->priority);
     printf("start time is %u\n", p->start_time);
     printf("end time is %u\n", p->end_time);
+    printf("\n");
 }
 
 int process_id(Process p){
@@ -95,4 +96,13 @@ int process_cpu_time_consume(Process p, int i){
         p->cpu_burst_time = p->cpu_burst_time - (unsigned int) i;
         return (int) p->cpu_burst_time;
     }
+}
+
+void process_set_start_time(Process p, unsigned int u){
+    if(p == NULL) return;
+    p->start_time = u;
+}
+void process_set_end_time(Process p, unsigned int u){
+    if(p == NULL) return;
+    p->end_time = u;
 }

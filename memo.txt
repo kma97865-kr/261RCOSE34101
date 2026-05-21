@@ -22,6 +22,7 @@ while (모든 큐가 empty){
                                     ->NULL 튀어나올 때까지 돌림
         있으면 ready_queue에 push
     running 검사(preemption x) -> running_process.h : running 하고 있는 애를 time 보고 종료, burst time을 깎는 방향
+    running 검사에서 빼는 과정과 넣는 과정을 분리
         process가 실행 중이면 continue;
         process가 종료되거나 비어있으면
             ready queue에서 pop하고 running process로 등록

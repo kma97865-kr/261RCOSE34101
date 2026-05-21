@@ -30,7 +30,7 @@ void job_queue_sort(void){
 
     Node temp = queue_front_node(job_queue);
     for(int i = 0; i<count; i++){
-        printf("i is %d\n", i);
+        //printf("i is %d\n", i);
         nodearr[i] = temp;
         temp = queue_node_next_node(temp);
     }
@@ -43,10 +43,10 @@ void job_queue_sort(void){
     );*/
     qsort(nodearr, count, sizeof(Node), compare_arrival_time);
 
-    for(int i = 0; i<count; i++){
+    /*for(int i = 0; i<count; i++){
         process_show(queue_node_get_data(nodearr[i]));
         printf("\n");
-    }
+    }*/
 
     //다시 연결 리스트로 만들어 준다.
     //job_queue를 부수고 다시 만들 필요 없이, next만 잘 이어주면 된다
@@ -61,10 +61,10 @@ void job_queue_sort(void){
     queue_set_rear(job_queue, nodearr[count - 1]);
 
     // (디버깅) 결과 출력
-    printf("here is sorted job_queue\n");
+    /*printf("here is sorted job_queue\n");
     for(int i = 0; i < count; i++) {
         process_show(queue_node_get_data(nodearr[i]));
-    }
+    }*/
 
     free(nodearr);
 }

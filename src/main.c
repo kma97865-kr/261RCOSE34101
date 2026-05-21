@@ -6,6 +6,7 @@
 #include "config.h"
 #include "job_queue.h"
 #include "running_process.h"
+#include "sch_algorithm.h"
 
 //initialize
 //used as external variable at other source file
@@ -23,6 +24,10 @@ int main(void){
     config_create_process(10);
     //queue_show(job_queue);
     job_queue_sort();
+
+    first_come_first_served();
+
+    queue_show(terminate_queue);
     config_clean();
     
 
