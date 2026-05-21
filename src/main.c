@@ -4,6 +4,8 @@
 #include "process.h"
 #include "queue.h"
 #include "config.h"
+#include "job_queue.h"
+#include "running_process.h"
 
 //initialize
 //used as external variable at other source file
@@ -11,7 +13,7 @@ Queue job_queue = NULL;
 Queue ready_queue = NULL;
 Queue wait_queue = NULL;
 Queue terminate_queue = NULL;
-Process runnning_process = NULL;
+Process running_process = NULL;
 
 
 int main(void){

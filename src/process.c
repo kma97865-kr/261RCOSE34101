@@ -88,3 +88,11 @@ unsigned int process_start_time(Process p){
 unsigned int process_end_time(Process p){
     return p->end_time;
 }
+
+int process_cpu_time_consume(Process p, int i){
+    if(p->cpu_burst_time < (unsigned int) i) return -1;
+    else{
+        p->cpu_burst_time = p->cpu_burst_time - (unsigned int) i;
+        return (int) p->cpu_burst_time;
+    }
+}
