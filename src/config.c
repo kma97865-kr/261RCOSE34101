@@ -29,8 +29,8 @@ void config_create_process(int n){
 } //create n process and push into job queue
 
 void config_create_test_process(){
-    int arrival[4] = {0, 2, 4, 5};
-    int burst[4] = {7, 4, 1, 4};
+    int arrival[4] = {0, 1,3,4};
+    int burst[4] = {5,4,1,2};
     int priority[4] = {3, 1, 4, 2};
     for(int i = 0; i<4; i++){
         Process temp = process_create();

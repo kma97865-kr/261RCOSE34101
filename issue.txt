@@ -2,10 +2,10 @@
 이슈 1: process 해제 책임을 어디서 질 것인가? process? queue? -> queue_make_empty()
 이슈 2: ready_queue에서 running_process로 넘어가는 과정을 함수 -> check_ready_put_running(int)
 이슈 4: (non_preemptive 한정) push -> priority_push로 바꾸면 될 거 같은데 코드 재활용 -> scheduling_algorithm()에 통합
+이슈 5: 테스트용 프로세스 생성하고 알고리즘 검증 -> 완료
 
 해결 미완료 이슈
 이슈 3: 프로세스를 생성한 다음, 여러 알고리즘에서 돌려보고 싶은데, 현재는 돌리면 모두 terminate_queue로 넘어가고, 분할되서 변형될 예정
     -> 해결 방법 : 원본 ready queue를 남겨두고, 알고리즘을 돌릴 때마다 ready queue에 똑같이 복사하는 방법
     -> 프로세스 생성, 파괴 (level 1), 알고리즘 적용 (level 2, config)
     -> config_create_process 를 수정해야 할 듯
-이슈 4: 테스트용 프로세스 생성하고 알고리즘 검증

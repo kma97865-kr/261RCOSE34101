@@ -8,12 +8,13 @@
 #include "sch_algorithm.h"
 
 //static 함수 : 이 소스코드 외에서 사용하지 않음
-static void check_ready_put_running(int time){
+static void check_ready_put_running(int time, int *consumed_time){
     if(queue_is_empty(ready_queue)) return; //check ready
         else{ //put runnning
             Process temp_p = queue_pop(ready_queue);
             process_set_start_time(temp_p, (unsigned int) time);
             running_process = temp_p;
+            *consumed_time = 0;
         }
 }
 static int check_priority_preemption(){
@@ -83,11 +84,20 @@ extern Process running_process; 비어있음 */
         }
 }*/
 
-void scheduling_algorithm(bool priority, bool preemption, bool sjf){ //
+void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_slice){ //
     //handling rule
     if(sjf == true) priority = true;
+    if(time_slice < 0){
+        printf("Time slice initalizion error\n");
+        exit(EXIT_FAILURE);
+    }
 
     int time = -1;
+    int consumed_time = 0; //RR
+
+    bool is_pr;
+    bool is_rr;
+
     while(true){
         //escape condition : every proess is terminated, stored in terminate queue
         if(queue_is_empty(job_queue) && queue_is_empty(ready_queue) 
@@ -115,10 +125,12 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf){ //
             if(preemption && sjf) process_set_priority(running_process, process_cpu_burst_time(running_process));
 
             if(remain_time > 0){ //still running
-                //I/O interrupt check
+                consumed_time++;
+                //I/O interrupt code
 
-                //preemptive code
-                if(preemption && check_priority_preemption()){ //{priority, sjf}
+                is_rr = time_slice && (consumed_time >= time_slice); //round_robin check
+                is_pr = preemption && check_priority_preemption(); //preemptive check
+                if(is_rr || is_pr){ //preemptive code
                     //preemption true -> priority (might) true
 
                     //termination에 넣을 프로세스 생성 후 push
@@ -129,13 +141,13 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf){ //
                     
                     //현재 running process를 ready_queue에 돌려놓음
                     if(sjf) process_set_priority(running_process, process_cpu_burst_time(running_process));
-                    priority_queue_push(ready_queue, running_process);
+                    if(priority) priority_queue_push(ready_queue, running_process);
+                    else queue_push(ready_queue, running_process);
 
                     //preemption 진행
                     running_process = NULL;
-                    check_ready_put_running(time);
-                }
-                else{//no preemption
+                    check_ready_put_running(time, &consumed_time);
+                }else{//no preemption or round robin
                     continue;//do nothing, pass to next time
                 }
             }else if(remain_time == 0){//running_process terminated
@@ -143,11 +155,11 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf){ //
                 queue_push(terminate_queue, running_process);
                 running_process = NULL;
                 //
-                check_ready_put_running(time);
+                check_ready_put_running(time, &consumed_time);
             }
         }
         else{//running_process is empty
-            check_ready_put_running(time);
+            check_ready_put_running(time, &consumed_time);
         }
     }
 }
@@ -159,25 +171,28 @@ extern Process running_process; 비어있음 */
 
 
 void first_come_first_served(){
-    scheduling_algorithm(false, false, false);
+    scheduling_algorithm(false, false, false, 0);
 }
 
 void non_preemptive_priority(){
-    scheduling_algorithm(true, false, false);
+    scheduling_algorithm(true, false, false, 0);
 }
 
 void non_preemptive_sjf(){
     //priority 갱신의 책임은 non_preemptive_sjf에서 짐
     setting_sjf();
-    scheduling_algorithm(true, false, true);
+    scheduling_algorithm(true, false, true, 0);
 }
 
 
 void preemptive_priority(){
-    scheduling_algorithm(true, true, false);
+    scheduling_algorithm(true, true, false, 0);
 }
 
 void preemptive_sjf(){
     setting_sjf();
-    scheduling_algorithm(true, true, true);
+    scheduling_algorithm(true, true, true, 0);
+}
+void round_robin(int time_slice){
+    scheduling_algorithm(false, false, false, time_slice);
 }

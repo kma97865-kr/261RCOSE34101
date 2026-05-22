@@ -88,9 +88,9 @@ void evaluate_gantt_chart(Queue q) {
     }
 
     //printf("\n[ CPU Scheduling Timeline ]\n");
-    printf("===================================\n");
+    printf("============================================================\n");
     printf("    TIME    |  PROCESS  |  Arrival time  |  Priority  | Remaining time\n");
-    printf("-----------------------------------\n");
+    printf("------------------------------------------------------------\n");
 
     Node curr_node = queue_front_node(q);
     int current_time = 0;
@@ -112,5 +112,5 @@ void evaluate_gantt_chart(Queue q) {
         current_time = process_end_time(p);
         curr_node = queue_node_next_node(curr_node);
     }
-    printf("=================================\n");
+    printf("==========================================================\n");
 }
