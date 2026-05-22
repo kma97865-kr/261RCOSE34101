@@ -30,7 +30,7 @@ Process process_create(){
     p->process_index = p_index++;
     p->process_id = rand();
     p->arrival_time = rand()%MAX_TIME;
-    p->cpu_burst_time = rand()%MAX_TIME;
+    p->cpu_burst_time = rand()%MAX_TIME + 1;
     p->io_start_time = rand()%MAX_TIME;
     p->io_end_time = rand()%MAX_TIME;
     p->start_time = 0;
@@ -65,9 +65,14 @@ void process_show(Process p){
     printf("\n");
 }
 
+//방어적 프로그램 -> p==NULL 일 경우 수정해야 함
 int process_id(Process p){
     return p->process_id;
 }
+int process_index(Process p){
+    return p->process_index;
+}
+
 unsigned int process_arrival_time(Process p){
     return p->arrival_time;
 }
@@ -91,7 +96,10 @@ unsigned int process_end_time(Process p){
 }
 
 int process_cpu_time_consume(Process p, int i){
-    if(p->cpu_burst_time < (unsigned int) i) return -1;
+    if(p->cpu_burst_time < (unsigned int) i) {
+        printf("process_cpu_time_consume Error\n");
+        return -1;
+    }
     else{
         p->cpu_burst_time = p->cpu_burst_time - (unsigned int) i;
         return (int) p->cpu_burst_time;

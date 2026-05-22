@@ -12,6 +12,7 @@ void process_show(Process p);
 
 //Getter
 int process_id(Process p);
+int process_index(Process p);
 unsigned int process_arrival_time(Process p);
 unsigned int process_cpu_burst_time(Process p);
 unsigned int process_io_start_time(Process p);

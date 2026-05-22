@@ -118,6 +118,10 @@ Node queue_node_next_node(Node n){
     if(n == NULL) return NULL;
     return n->next;
 }
+int queue_size(Queue q){
+    if(q == NULL) return 0;
+    return q->count;
+}
 
 //
 void queue_node_set_next(Node n1, Node n2){

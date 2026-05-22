@@ -43,12 +43,13 @@ void first_come_first_served(){
         }
 
         //check running process
+        //assumption : inital burst time of every process > 0
         if(running_process != NULL){ //running_process exits
             int remain_time = running_process_time_consume(1);
             if(remain_time > 0){ //still running
                 continue;//do nothing, pass to next time
             }else if(remain_time == -1){ //error on consuming
-                printf("remain_time failure");
+                printf("remain_time failure\n");
                 exit(EXIT_FAILURE);
             }else if(remain_time == 0){//running_process terminated
                 process_set_end_time(running_process, (unsigned int)time);

@@ -7,6 +7,7 @@
 #include "job_queue.h"
 #include "running_process.h"
 #include "sch_algorithm.h"
+#include "evaluate.h"
 
 //initialize
 //used as external variable at other source file
@@ -21,15 +22,14 @@ int main(void){
     srand((unsigned int)time(NULL));
 
     config_initialize();
-    config_create_process(10);
+    config_create_process(20);
     //queue_show(job_queue);
     job_queue_sort();
-
     first_come_first_served();
-
     queue_show(terminate_queue);
-    config_clean();
-    
 
+    evaluate_gantt_chart(terminate_queue);
+
+    config_clean();
     return 0;
 }

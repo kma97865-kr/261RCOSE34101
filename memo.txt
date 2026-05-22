@@ -3,7 +3,6 @@
 
 5/16 : proess.h, process.c(프로세스) queue.h, queue.c(큐)
 이슈 : process 해제 책임을 어디서 질 것인가? process? queue?
-    stdbool.h
 다음 task : init_config() 초기화 모듈, final_config() 마무리 모듈
 
 5/18 : config.h, config.c(각 알고리즘을 실행하기 전 초기화, 끝난 후 청소)
@@ -14,7 +13,7 @@
 
 5/21 : running_process.h, running_process.c 완성
 다음 task : FCFS 
-이슈: ready_queue에서 running_process로 넘어가는 과정을 함수로 만들어야 할 듯
+이슈: ready_queue에서 running_process로 넘어가는 과정을 함수, check_ready_put_running(int)
 
 time = -1
 while (모든 큐가 empty){
@@ -29,9 +28,10 @@ while (모든 큐가 empty){
             ready queue에서 pop하고 running process로 등록
 }
 
-다다음 task:
-evaluate.h, evaluate.c
+5/22 : evaluate.h, evaluate.c, gantt chart
 terminate_queue -> turnaround time(끝난 시간 - 도착 시간), waiting time(대기 큐에 있는 시간), Gantt Chart
 기본 구상 : trounaround time -> 1 * N 동적 배열 = 마지막 끝난 시간 저장 -> 도착 시간 빼서 구함
             waiting time -> sigma(시작 시간) - sigma(종료 시간) + 마지막 종료 시간 - 도착 시간
-                         ->3 * N 동적 배열 
+이슈 : 프로세스를 생성한 다음, 여러 알고리즘에서 돌려보고 싶은데, 현재는 돌리면 모두 terminate_queue로 넘어가고, 분할되서 변형될 예정
+다음 task : non_preemptive SJF
+
