@@ -22,10 +22,10 @@ int main(void){
     srand((unsigned int)time(NULL));
 
     config_initialize();
-    config_create_process(5);
+    config_create_test_process();
     queue_show(job_queue);
     job_queue_sort();
-    first_come_first_served();
+    preemptive_priority();
     //queue_show(terminate_queue);
 
     evaluate_gantt_chart(terminate_queue);

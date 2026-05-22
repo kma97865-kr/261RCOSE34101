@@ -28,6 +28,20 @@ void config_create_process(int n){
     }
 } //create n process and push into job queue
 
+void config_create_test_process(){
+    int arrival[4] = {0, 2, 4, 5};
+    int burst[4] = {7, 4, 1, 4};
+    int priority[4] = {3, 1, 4, 2};
+    for(int i = 0; i<4; i++){
+        Process temp = process_create();
+        process_set_arrival_time(temp, arrival[i]);
+        process_set_cpu_burst_time(temp, burst[i]);
+        process_set_priority(temp, priority[i]);
+        queue_push(job_queue, temp);
+    }
+}
+
+
 void config_clean(){
     queue_make_empty(job_queue);
     queue_make_empty(ready_queue);

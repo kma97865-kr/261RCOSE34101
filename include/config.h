@@ -12,6 +12,7 @@ extern Process runnning_process;
 
 void config_initialize(void); //create extern values
 void config_create_process(int n); //create n process and push into job queue
+void config_create_test_process();
 
 void config_clean(); //deallocate all -> destroy extern values
 

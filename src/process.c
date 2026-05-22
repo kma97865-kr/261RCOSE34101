@@ -107,6 +107,19 @@ int process_cpu_time_consume(Process p, int i){
     }
 }
 
+void process_set_arrival_time(Process p, unsigned int u){
+    if(p == NULL) return;
+    p->arrival_time = u;
+}
+void process_set_cpu_burst_time(Process p, unsigned int u){
+    if(p == NULL) return;
+    p->cpu_burst_time = u;
+}
+void process_set_priority(Process p, int i){
+    if(p == NULL) return;
+    p->priority = i;
+}
+
 void process_set_start_time(Process p, unsigned int u){
     if(p == NULL) return;
     p->start_time = u;
@@ -114,10 +127,6 @@ void process_set_start_time(Process p, unsigned int u){
 void process_set_end_time(Process p, unsigned int u){
     if(p == NULL) return;
     p->end_time = u;
-}
-void process_set_priority(Process p, int i){
-    if(p == NULL) return;
-    p->priority = i;
 }
 void process_copy(Process source, Process target){
     *target = *source;

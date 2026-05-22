@@ -26,9 +26,12 @@ int process_cpu_time_consume(Process p, int i);
 //decrease cpu_burst_time for time i;
 //if fail, return -1. else, return remaining burst time
 
+void process_set_arrival_time(Process p, unsigned int u);
+void process_set_cpu_burst_time(Process p, unsigned int u);
+void process_set_priority(Process p, int i);
+
 void process_set_start_time(Process p, unsigned int u);
 void process_set_end_time(Process p, unsigned int u);
-void process_set_priority(Process p, int i);
 void process_copy(Process source, Process target);
 
 #endif
