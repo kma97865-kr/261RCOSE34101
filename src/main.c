@@ -22,13 +22,20 @@ int main(void){
     srand((unsigned int)time(NULL));
 
     config_initialize();
-    config_create_process(20);
-    //queue_show(job_queue);
+    config_create_process(5);
+    queue_show(job_queue);
     job_queue_sort();
     first_come_first_served();
-    queue_show(terminate_queue);
+    //queue_show(terminate_queue);
 
     evaluate_gantt_chart(terminate_queue);
+
+    //terminate_queue의 사이즈만큼 배열을 줘야 함
+    int size = queue_size(terminate_queue);
+    int *arr = malloc(sizeof(int) * size);
+    printf("waiting time is %d\n", evaluate_waiting_time(terminate_queue, arr));
+    printf("turnaround time is %d\n", evaluate_turnaround_time(terminate_queue, arr));
+    free(arr);
 
     config_clean();
     return 0;

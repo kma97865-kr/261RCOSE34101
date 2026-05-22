@@ -83,7 +83,7 @@ Process queue_pop(Queue q){
 }
 
 //
-Process queue_front(Queue q){
+Process queue_front_process(Queue q){
     if(queue_is_empty(q)) return NULL;
     return q->front->data;
 }
@@ -133,4 +133,53 @@ void queue_set_front(Queue q, Node n){
 }
 void queue_set_rear(Queue q, Node n){
     q->rear = n;
+}
+
+//priority_queue
+void priority_queue_push(Queue q, Process i){
+    //find original seat for Process i
+    Node new_node = malloc(sizeof(struct node));
+    if(new_node == NULL){
+        printf("node create failure");
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = i;
+    new_node->next = NULL;
+
+    if(queue_is_empty(q)){
+        q->front = new_node;
+        q->rear = new_node;
+    }
+    else{
+        //find its seat
+        Node prior_node = NULL;
+        Node cur_node = q->front;
+        Process temp_p;
+        while(cur_node != NULL){
+            temp_p = cur_node->data;
+            if(process_priority(i) < process_priority(temp_p)){//new_node를 prior_node 와 cur_node 사이에
+                if(prior_node == NULL){//cur node가 맨 앞 노드 였을 경우
+                    q->front = new_node;
+                    new_node->next = cur_node;
+                }else{
+                    prior_node -> next = new_node;
+                    new_node->next = cur_node;
+                }
+                break;
+            }
+            //around the queue
+            prior_node = cur_node;
+            cur_node = cur_node->next;
+        }
+
+        if(cur_node == NULL){ //가장 끝에 new_node 붙여야 하는 경우
+            q->rear->next = new_node;
+            q->rear = new_node;
+        }
+    }
+    q->count++;
+}
+Process priority_queue_pop(Queue q){
+    //nothing to do
+    return queue_pop(q);
 }

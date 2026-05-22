@@ -75,7 +75,7 @@ void job_queue_sort(void){
 Process job_queue_to_ready(int time){
     if(queue_is_empty(job_queue)) return NULL;
 
-    Process temp = queue_front(job_queue);
+    Process temp = queue_front_process(job_queue);
     if(process_arrival_time(temp) <= (unsigned int)time){
         return queue_pop(job_queue);
     }else{

@@ -28,9 +28,10 @@ Process process_create(){
     }
     //initialize process
     p->process_index = p_index++;
-    p->process_id = rand();
-    p->arrival_time = rand()%MAX_TIME;
-    p->cpu_burst_time = rand()%MAX_TIME + 1;
+    p->process_id = rand(); //0~INT_MAX(LINUX)
+    p->arrival_time = rand()%MAX_TIME; //0~19
+    //p->arrival_time = 0;
+    p->cpu_burst_time = rand()%MAX_TIME + 1; //1~20
     p->io_start_time = rand()%MAX_TIME;
     p->io_end_time = rand()%MAX_TIME;
     p->start_time = 0;
@@ -41,7 +42,7 @@ Process process_create(){
         p->io_start_time = p->io_end_time;
         p->io_end_time = temp;
     }
-    p->priority = rand();
+    p->priority = rand()%MAX_TIME;
     
     return p;
 }
@@ -54,11 +55,11 @@ void process_show(Process p){
         return;
     }
     printf("process_index is %d\n", p->process_index);
-    printf("process_id is %d\n", p->process_id);
+    //printf("process_id is %d\n", p->process_id);
     printf("arrival_time is %u\n", p->arrival_time);
     printf("cpu burst time is %u\n", p->cpu_burst_time);
-    printf("io_start_time is %u\n", p->io_start_time);
-    printf("io_end time is %u\n", p->io_end_time);
+    //printf("io_start_time is %u\n", p->io_start_time);
+    //printf("io_end time is %u\n", p->io_end_time);
     printf("priority is %d\n", p->priority);
     printf("start time is %u\n", p->start_time);
     printf("end time is %u\n", p->end_time);
@@ -98,7 +99,7 @@ unsigned int process_end_time(Process p){
 int process_cpu_time_consume(Process p, int i){
     if(p->cpu_burst_time < (unsigned int) i) {
         printf("process_cpu_time_consume Error\n");
-        return -1;
+        exit(EXIT_FAILURE);
     }
     else{
         p->cpu_burst_time = p->cpu_burst_time - (unsigned int) i;
@@ -113,4 +114,11 @@ void process_set_start_time(Process p, unsigned int u){
 void process_set_end_time(Process p, unsigned int u){
     if(p == NULL) return;
     p->end_time = u;
+}
+void process_set_priority(Process p, int i){
+    if(p == NULL) return;
+    p->priority = i;
+}
+void process_copy(Process source, Process target){
+    *target = *source;
 }
