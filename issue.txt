@@ -9,3 +9,4 @@
     -> 해결 방법 : 원본 ready queue를 남겨두고, 알고리즘을 돌릴 때마다 ready queue에 똑같이 복사하는 방법
     -> 프로세스 생성, 파괴 (level 1), 알고리즘 적용 (level 2, config)
     -> config_create_process 를 수정해야 할 듯
+이슈 6: i/o 발생 on/off 를 main 함수 or 사용자 입력으로 받아서 관리할 수 있게

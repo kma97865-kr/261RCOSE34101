@@ -1,13 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h> //srand(), rand() function
-#include "process.h"
-#include "queue.h"
-#include "config.h"
-#include "job_queue.h"
-#include "running_process.h"
-#include "sch_algorithm.h"
-#include "evaluate.h"
+#include "process.h" 
+#include "queue.h" 
+#include "job_queue.h" //control job_queue
+#include "wait_queue.h" //control wait_queue, I/O interrupt
+#include "running_process.h" //control running_process
+#include "sch_algorithm.h" //scheduling algorithm
+#include "config.h" //Initialization, make clean
+#include "evaluate.h" //evaluation, Gantt chart
+
+
 
 //initialize
 //used as external variable at other source file
@@ -22,10 +25,13 @@ int main(void){
     srand((unsigned int)time(NULL));
 
     config_initialize();
-    config_create_process(10);
-    queue_show(job_queue);
-    job_queue_sort();
-    round_robin(5);
+    config_create_process(4);
+    //config_create_test_process();
+    queue_show(job_queue);;
+
+    //sch algorithm
+    preemptive_sjf();
+
     //queue_show(terminate_queue);
 
     evaluate_gantt_chart(terminate_queue);

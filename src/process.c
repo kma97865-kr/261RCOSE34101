@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h> //for rand() function(0~INT_MAX)
+#include <limits.h> //for INT_MAX
 #include "process.h"
 
+//caution!! : MAX_TIME should not be too big, compared to INT_MAX
 #define MAX_TIME 20
+
 
 int p_index = 0;
 
@@ -29,19 +32,13 @@ Process process_create(){
     //initialize process
     p->process_index = p_index++;
     p->process_id = rand(); //0~INT_MAX(LINUX)
-    p->arrival_time = rand()%MAX_TIME; //0~19
+    p->arrival_time = rand()%MAX_TIME; //0~MAX_TIME-1
     //p->arrival_time = 0;
-    p->cpu_burst_time = rand()%MAX_TIME + 1; //1~20
-    p->io_start_time = rand()%MAX_TIME;
-    p->io_end_time = rand()%MAX_TIME;
+    p->cpu_burst_time = rand()%MAX_TIME + 1; //1~MAX_TIME
+    p->io_start_time = 0;
+    p->io_end_time = 0;
     p->start_time = 0;
     p->end_time = 0;
-    //io_start -> io_end
-    if(p->io_end_time < p->io_start_time){
-        int temp = p->io_start_time;
-        p->io_start_time = p->io_end_time;
-        p->io_end_time = temp;
-    }
     p->priority = rand()%MAX_TIME;
     
     return p;
@@ -127,6 +124,14 @@ void process_set_start_time(Process p, unsigned int u){
 void process_set_end_time(Process p, unsigned int u){
     if(p == NULL) return;
     p->end_time = u;
+}
+void process_set_io_start_time(Process p, unsigned int u){
+    if(p == NULL) return;
+    p->io_start_time = u;
+}
+void process_set_io_end_time(Process p, unsigned int u){
+    if(p == NULL) return;
+    p->io_end_time = u;
 }
 void process_copy(Process source, Process target){
     *target = *source;

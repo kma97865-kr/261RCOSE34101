@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include "process.h"
 #include "queue.h"
 #include "config.h"
@@ -29,9 +30,9 @@ void config_create_process(int n){
 } //create n process and push into job queue
 
 void config_create_test_process(){
-    int arrival[4] = {0, 1,3,4};
-    int burst[4] = {5,4,1,2};
-    int priority[4] = {3, 1, 4, 2};
+    int arrival[4] = {0, 1,4,6};
+    int burst[4] = {5,5, 3,4};
+    int priority[4] = {2, 3, 1, 4};
     for(int i = 0; i<4; i++){
         Process temp = process_create();
         process_set_arrival_time(temp, arrival[i]);

@@ -6,6 +6,10 @@
 #include "job_queue.h"
 #include "running_process.h"
 #include "sch_algorithm.h"
+#include "wait_queue.h"
+#define MAX_IO_TIME 100
+#define PROBABILITY 50
+
 
 //static 함수 : 이 소스코드 외에서 사용하지 않음
 static void check_ready_put_running(int time, int *consumed_time){
@@ -34,6 +38,15 @@ static void setting_sjf(){ //job_queue 순회하면서 priority를 burst time으
         temp_node = queue_node_next_node(temp_node);
     }
 }
+static bool is_io_occured(){ //let io occur randomly, if occured, yes
+    if(rand()%PROBABILITY == 0) return true;
+    else return false;
+}
+static void clear_io_time(Process p){ //clear if process is terminated without io interrupt
+    process_set_io_start_time(p, 0);
+    process_set_io_end_time(p, 0);
+}
+
 
 /*extern Queue job_queue; arrival_time 대로 정렬
 extern Queue ready_queue; 비어있음
@@ -84,17 +97,21 @@ extern Process running_process; 비어있음 */
         }
 }*/
 
-void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_slice){ //
+void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_slice){
+    job_queue_sort();
+    
     //handling rule
     if(sjf == true) priority = true;
     if(time_slice < 0){
         printf("Time slice initalizion error\n");
         exit(EXIT_FAILURE);
     }
+    
 
     int time = -1;
     int consumed_time = 0; //RR
 
+    bool is_io = true;
     bool is_pr;
     bool is_rr;
 
@@ -115,19 +132,46 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_sli
             temp_from_job = job_queue_to_ready(time);
         }
         //wait queue -> ready queue
+        Process temp_from_wait = wait_queue_to_ready(time);
+        while(temp_from_wait != NULL){
+            if(priority) priority_queue_push(ready_queue, temp_from_wait); //use priority queue
+            else queue_push(ready_queue, temp_from_wait); //use ordinary queue (FCFS)
+            temp_from_wait = wait_queue_to_ready(time);
+        }
 
         //check running process
         //assumption : inital burst time of every process > 0
         if(running_process != NULL){//running_process exits
             int remain_time = running_process_time_consume(1);
 
-            //preemptive sjf has to refreash priority for every time
+            //preemptive sjf has to refresh priority for every time
             if(preemption && sjf) process_set_priority(running_process, process_cpu_burst_time(running_process));
 
             if(remain_time > 0){ //still running
                 consumed_time++;
                 //I/O interrupt code
+                    if(is_io && is_io_occured()){//Interrupt occured, set io start time and io end time
+                        process_set_io_start_time(running_process, (unsigned int) time);
+                        process_set_io_end_time(running_process, time + rand()%MAX_IO_TIME + 1);
 
+                        //creat new process to put in terminate_queue and put it
+                        Process new_ter_io = process_create();
+                        process_copy(running_process, new_ter_io);
+                        process_set_end_time(new_ter_io, (unsigned int)time);
+                        queue_push(terminate_queue, new_ter_io);
+                        
+                        //move running process to wait queue
+                        wait_queue_push(wait_queue, running_process);
+                        
+                        //clear running_process, fill from ready_queue 
+                        running_process = NULL;
+                        check_ready_put_running(time, &consumed_time);
+
+                        //if interrupt and replace are occured, nothing to do more in this time
+                        continue;      
+                    }
+                    //Interrupt not occured -> do nothing here, continue below code
+                    
                 is_rr = time_slice && (consumed_time >= time_slice); //round_robin check
                 is_pr = preemption && check_priority_preemption(); //preemptive check
                 if(is_rr || is_pr){ //preemptive code
@@ -137,6 +181,7 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_sli
                     Process new_ter = process_create();
                     process_copy(running_process, new_ter);
                     process_set_end_time(new_ter, (unsigned int)time);
+                    clear_io_time(new_ter);
                     queue_push(terminate_queue, new_ter);
                     
                     //현재 running process를 ready_queue에 돌려놓음
@@ -152,6 +197,7 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_sli
                 }
             }else if(remain_time == 0){//running_process terminated
                 process_set_end_time(running_process, (unsigned int)time);
+                clear_io_time(running_process);
                 queue_push(terminate_queue, running_process);
                 running_process = NULL;
                 //

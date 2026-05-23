@@ -48,6 +48,17 @@ terminate_queue -> turnaround time(끝난 시간 - 도착 시간), waiting time(
 
 다음 task: I/O interrupt -> wait queue.h, wait queue.c가 필요함
                         -> running_process -> wait_queue, wait_queue->ready_queue
-                        -> I/O start time이 (arrival_time, arrival_time + cpu_burst_time)  안으로 들어오도록 조치가 필요
+                        -> I/O 실행을 running 하면서 random 으로 적용하는 방법
                         -> I/O end time은 상관없음(현재 start_time 보다 앞서기만 하면 됨)
 
+5/23 : I/O interrupt
+    I/O interrupt 발생은 매 시간 랜덤 -> probability로 조절
+    wait_queue_push -> wait queue는 io_end_time 대로 정렬해서 사용
+    wait_queue->ready_queue 는 job_queue->ready_queue와 같은 priority 사용
+        NULL : FCFS (wherever process come from wait queue or ready queue), do not use arrival time
+        priority : priority
+        SJF : reamining cpu burst time as priority
+이슈: i/o 발생 on/off 를 main 함수 or 사용자 입력으로 받아서 관리할 수 있게
+다음 task : 추가적인 스케쥴링 함수
+다다음 task : wrapping
+다다다음 task : refactoring

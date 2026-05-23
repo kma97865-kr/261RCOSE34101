@@ -89,7 +89,7 @@ void evaluate_gantt_chart(Queue q) {
 
     //printf("\n[ CPU Scheduling Timeline ]\n");
     printf("============================================================\n");
-    printf("    TIME    |  PROCESS  |  Arrival time  |  Priority  | Remaining time\n");
+    printf("   TIME   |  PROCESS  |  Arrival time  |  Priority  | Remaining time | I/O start | I/O end |\n");
     printf("------------------------------------------------------------\n");
 
     Node curr_node = queue_front_node(q);
@@ -106,9 +106,9 @@ void evaluate_gantt_chart(Queue q) {
         }
 
         // 프로세스 실행 구간
-        printf(" %3d ~ %-3d  |  [ P%-2d ]  |  %-2d  |  %-2d  |  %-2d\n", 
+        printf(" %3d ~ %-3d  |  [ P%-2d ]  |  %-2d  |  %-2d  |  %-2d  |  %-2d  |  %-2d  |\n", 
             process_start_time(p), process_end_time(p), process_index(p), process_arrival_time(p), 
-            process_priority(p), process_cpu_burst_time(p));
+            process_priority(p), process_cpu_burst_time(p), process_io_start_time(p), process_io_end_time(p));
         current_time = process_end_time(p);
         curr_node = queue_node_next_node(curr_node);
     }
