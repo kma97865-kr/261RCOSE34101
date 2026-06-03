@@ -25,12 +25,12 @@ int main(void){
     srand((unsigned int)time(NULL));
 
     config_initialize();
-    config_create_process(4);
+    config_create_process(10);
     //config_create_test_process();
     queue_show(job_queue);;
 
     //sch algorithm
-    preemptive_sjf();
+    unix_scheduling(50, 10);
 
     //queue_show(terminate_queue);
 

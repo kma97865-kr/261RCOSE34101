@@ -62,3 +62,13 @@ terminate_queue -> turnaround time(끝난 시간 - 도착 시간), waiting time(
 다음 task : 추가적인 스케쥴링 함수
 다다음 task : wrapping
 다다다음 task : refactoring
+
+6/3 : 추가적인 스케쥴링 함수 : UNIX(dynamic priority)
+    priority = base + recent CPU usage + nice
+    후보 1. future - knowledge scheduling : SJF 에서 현재 실행시간 보다 짧은 애를 대기하고 넣는게 가능할 경우 넣는 방법
+    후보 2. UNIX : recalculate once per second, priority = (recent CPU usage /2) + basePriority + Nice(user implement)
+                    recent CPU usage = how often a process has used the CPU since priorities were last recalculated
+    후보 3. ensures (a CPU usage / # of process)
+    다음 task : wrapping
+
+

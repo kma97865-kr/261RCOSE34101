@@ -8,7 +8,10 @@
 #include "sch_algorithm.h"
 #include "wait_queue.h"
 #define MAX_IO_TIME 100
-#define PROBABILITY 50
+#define PROBABILITY 50 //(1/50)
+#define TIME_TICK 10
+bool IS_UNIX = false;
+int BASE_PRIORITY = 0;
 
 
 //static 함수 : 이 소스코드 외에서 사용하지 않음
@@ -29,12 +32,20 @@ static int check_priority_preemption(){
     int p2 = process_priority(queue_front_process(ready_queue));
     return (p1 - p2 > 0) ? 1 : 0;
 }
-static void setting_sjf(){ //job_queue 순회하면서 priority를 burst time으로 바꿔줌
-    Node temp_node = queue_front_node(job_queue);
+static void setting_priority(Queue queue, int priority_change){ //queue 순회하면서 priority를 갱신
+    Node temp_node = queue_front_node(queue);
     Process temp_p;
     while(temp_node != NULL){
         temp_p = queue_node_get_data(temp_node);
-        process_set_priority(temp_p, process_cpu_burst_time(temp_p));
+        
+        int new_priority;
+        if(IS_UNIX) new_priority = process_priority(temp_p) + priority_change;
+        else new_priority = process_cpu_burst_time(temp_p); //sjf
+
+        //assume that priority >= base_priority
+        if(IS_UNIX && new_priority < BASE_PRIORITY) new_priority = BASE_PRIORITY;
+
+        process_set_priority(temp_p, new_priority);
         temp_node = queue_node_next_node(temp_node);
     }
 }
@@ -103,17 +114,18 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_sli
     //handling rule
     if(sjf == true) priority = true;
     if(time_slice < 0){
+        //time_slice = 0 -> disable RR, >0 -> enable RR
         printf("Time slice initalizion error\n");
         exit(EXIT_FAILURE);
     }
     
-
     int time = -1;
     int consumed_time = 0; //RR
 
     bool is_io = true;
     bool is_pr;
     bool is_rr;
+    bool is_unix = IS_UNIX;
 
     while(true){
         //escape condition : every proess is terminated, stored in terminate queue
@@ -139,13 +151,23 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_sli
             temp_from_wait = wait_queue_to_ready(time);
         }
 
+        if(is_unix){//on the Unix scheduling, recalculate priority every TIME_TICK
+            if(time%TIME_TICK == 0){
+                //setting_priority(job_queue, -1 * TIME_TICK);
+                setting_priority(ready_queue, -1 * TIME_TICK);
+                setting_priority(wait_queue, -1 * TIME_TICK);
+                //increase CPU_usage of running_process
+                if(running_process != NULL) process_set_priority(running_process, process_priority(running_process) + TIME_TICK);
+            }
+        }
+        
         //check running process
         //assumption : inital burst time of every process > 0
         if(running_process != NULL){//running_process exits
             int remain_time = running_process_time_consume(1);
 
-            //preemptive sjf has to refresh priority for every time
-            if(preemption && sjf) process_set_priority(running_process, process_cpu_burst_time(running_process));
+            //sjf has to refresh running_process priority for every time
+            if(sjf) process_set_priority(running_process, process_cpu_burst_time(running_process));
 
             if(remain_time > 0){ //still running
                 consumed_time++;
@@ -185,7 +207,6 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_sli
                     queue_push(terminate_queue, new_ter);
                     
                     //현재 running process를 ready_queue에 돌려놓음
-                    if(sjf) process_set_priority(running_process, process_cpu_burst_time(running_process));
                     if(priority) priority_queue_push(ready_queue, running_process);
                     else queue_push(ready_queue, running_process);
 
@@ -226,19 +247,38 @@ void non_preemptive_priority(){
 
 void non_preemptive_sjf(){
     //priority 갱신의 책임은 non_preemptive_sjf에서 짐
-    setting_sjf();
+    setting_priority(job_queue, 0);
     scheduling_algorithm(true, false, true, 0);
 }
-
 
 void preemptive_priority(){
     scheduling_algorithm(true, true, false, 0);
 }
 
 void preemptive_sjf(){
-    setting_sjf();
+    setting_priority(job_queue, 0);
     scheduling_algorithm(true, true, true, 0);
 }
+
 void round_robin(int time_slice){
     scheduling_algorithm(false, false, false, time_slice);
+}
+
+void custom_scheudling(bool priority, bool preemption, bool sjf, int time_slice){
+    if(sjf) priority = true;
+    if(time_slice < 0){
+        printf("TIME SLICE ERROR\n");
+        return;
+    }
+    scheduling_algorithm(priority, preemption, sjf, time_slice);
+}
+
+void unix_scheduling(int base_priority, int time_slice){
+    IS_UNIX = true;
+    //job queue에 있는 priority에 base + nice 만큼 더해줌
+    BASE_PRIORITY = base_priority;
+    setting_priority(job_queue, base_priority);
+    scheduling_algorithm(true, true, false, time_slice);
+    BASE_PRIORITY = 0;
+    IS_UNIX = false;
 }
