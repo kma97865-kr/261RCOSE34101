@@ -7,10 +7,12 @@
 #include "running_process.h"
 #include "sch_algorithm.h"
 #include "wait_queue.h"
-#define MAX_IO_TIME 100
-#define PROBABILITY 50 //(1/50)
-#define TIME_TICK 10
-bool IS_UNIX = false;
+#define TIME_TICK (1 * BASE_TICK) //UNIX scheduling, recalculate priority every TIME_TICK
+#define MAX_IO_TIME (5 * BASE_TICK) //IO burst time
+#define PROBABILITY (MAX_TIME) // IO burst probability, 1/50
+//static 전역 변수 : 이 소스코드 외에서 사용하지 않음
+static bool IS_UNIX = false;
+static bool IS_IO = true;
 int BASE_PRIORITY = 0;
 
 
@@ -58,6 +60,14 @@ static void clear_io_time(Process p){ //clear if process is terminated without i
     process_set_io_end_time(p, 0);
 }
 
+void flip_io_interrupt(){
+    if(IS_IO) IS_IO = false;
+    else IS_IO = true;
+}
+
+bool show_io_interrupt(){
+    return IS_IO;
+}
 
 /*extern Queue job_queue; arrival_time 대로 정렬
 extern Queue ready_queue; 비어있음
@@ -122,7 +132,6 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_sli
     int time = -1;
     int consumed_time = 0; //RR
 
-    bool is_io = true;
     bool is_pr;
     bool is_rr;
     bool is_unix = IS_UNIX;
@@ -172,7 +181,7 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_sli
             if(remain_time > 0){ //still running
                 consumed_time++;
                 //I/O interrupt code
-                    if(is_io && is_io_occured()){//Interrupt occured, set io start time and io end time
+                    if(IS_IO && is_io_occured()){//Interrupt occured, set io start time and io end time
                         process_set_io_start_time(running_process, (unsigned int) time);
                         process_set_io_end_time(running_process, time + rand()%MAX_IO_TIME + 1);
 

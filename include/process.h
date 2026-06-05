@@ -1,6 +1,11 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
+//for process.c and scho_algorithm.c
+#define BASE_TICK 5
+#define MAX_TIME (10 * BASE_TICK) 
+
+
 typedef struct _process *Process; //Process is pointer of strcut _process
 
 //initialize

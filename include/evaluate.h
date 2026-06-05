@@ -3,6 +3,7 @@
 #include "process.h"
 #include "queue.h"
 
+extern Queue source_job_queue; 
 extern Queue job_queue;
 extern Queue ready_queue;
 extern Queue wait_queue;
@@ -21,5 +22,7 @@ int evaluate_turnaround_time(Queue q, int *);
 
 void evaluate_gantt_chart(Queue q);
 //draw gantt chart
+
+void evaluate_algorithm();
 
 #endif

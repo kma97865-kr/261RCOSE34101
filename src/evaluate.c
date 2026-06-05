@@ -5,7 +5,7 @@
 //waiting time -> sigma(시작 시간) - sigma(종료 시간) + 마지막 종료 시간 - 도착 시간
 int evaluate_waiting_time(Queue q, int *arr){
     //int *arr is storage of waiting time.
-    int size = queue_size(q);
+    int size = queue_size(source_job_queue);
 
     int *start_sigma_arr = calloc(size, sizeof(int));
     int *end_sigma_arr = calloc(size, sizeof(int));
@@ -29,6 +29,8 @@ int evaluate_waiting_time(Queue q, int *arr){
 
 
     int sum = 0;
+    //size 가 아니라 프로세스 개수(index) 만큼만 돌면 되는데? -> 사용자의 입력으로 매번 다르다
+    //Then how? source_job_queue의 size를 재면 된다
     for(int i = 0; i<size; i++){
         arr[i] = start_sigma_arr[i] - end_sigma_arr[i] + end_last_arr[i] - arrival_time[i];
         if(arr[i] < 0){
@@ -46,9 +48,10 @@ int evaluate_waiting_time(Queue q, int *arr){
     return sum / size;
 }
 
+//turnaround_time = end_time - arrival_time
 int evaluate_turnaround_time(Queue q, int *arr){
     //arr는 caller에서 이미 할당이 된 배열
-    int size = queue_size(q);
+    int size = queue_size(source_job_queue);
     int *arrival_arr = calloc(size, sizeof(int));
 
     //if queue is NULL, return NULL
@@ -57,7 +60,7 @@ int evaluate_turnaround_time(Queue q, int *arr){
         Process temp_p = queue_node_get_data(temp);
         arr[process_index(temp_p)] = (int)process_end_time(temp_p);
 
-        if(arrival_arr[process_index(temp_p)] == 0){
+        if(arrival_arr[process_index(temp_p)] == 0){ //terminate queue has mutiple copy of same process
             //fill arrival time of each process
             arrival_arr[process_index(temp_p)] = (int) process_arrival_time(temp_p);
         }
@@ -113,4 +116,15 @@ void evaluate_gantt_chart(Queue q) {
         curr_node = queue_node_next_node(curr_node);
     }
     printf("==========================================================\n");
+}
+
+void evaluate_algorithm(){
+    //print result of scheduling
+    evaluate_gantt_chart(terminate_queue);
+    //arr[process->index] 정보가 저장되어 있음 : 추후 활용 가능
+    int *arr = malloc(sizeof(int) * queue_size(source_job_queue));
+    printf("Average waiting time is %d\n", evaluate_waiting_time(terminate_queue, arr));
+    printf("Average turnaround time is %d\n", evaluate_turnaround_time(terminate_queue, arr));
+
+    free(arr);
 }

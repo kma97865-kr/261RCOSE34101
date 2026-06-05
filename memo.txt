@@ -82,4 +82,7 @@ terminate_queue -> turnaround time(끝난 시간 - 도착 시간), waiting time(
         }
     }
 
+6/5 : I/O를 input으로 switch, parameters, evaluate 함수 최적화
+
+6/6 
 

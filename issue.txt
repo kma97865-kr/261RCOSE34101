@@ -8,12 +8,18 @@
     -> 프로세스 생성, 파괴 (level 1), 알고리즘 적용 (level 2, config)
     -> config_create_process 를 수정해야 할 듯
     -> 완료
+이슈 6: i/o 발생 on/off 를 main 함수 or 사용자 입력으로 받아서 관리할 수 있게
+    ->sch_algorithm.c에 전역 변수로 설정해놓고 setter 함수 추가
+이슈 7: 사전 정의한 값들 사이의 관계를 어떻게 컨트롤 할건지 : 10을 단위 하나로 잡자
+    #define BASE_TICK 10 
+    #define MAX_TIME (10 * BASE_TICK) //enough length for preemtpion, aging
+    #define TIME_TICK (1 * BASE_TICK) //UNIX scheduling, recalculate priority every TIME_TICK
+    #define MAX_IO_TIME (5 * BASE_TICK) //not too longer than MAX_TIME, see interation with CPU
+    #define PROBABILITY (MAX_TIME) // IO burst probability, not too frequent I/O interrupt
+이슈 8: main 함수는 항상 깔끔하게 -> 각 알고리즘 조금 예쁘게 refactoring
+
 
 해결 미완료 이슈
-이슈 6: i/o 발생 on/off 를 main 함수 or 사용자 입력으로 받아서 관리할 수 있게
-이슈 7: 사전 정의한 값들 사이의 관계를 어떻게 컨트롤 할건지 : 10을 단위 하나로 잡자
-    #define MAX_IO_TIME 100
-    #define PROBABILITY 50 //(1/50)
-    #define TIME_TICK 10
-    #define MAX_TIME 20
-이슈 8: main 함수는 항상 깔끔하게 -> 각 알고리즘 조금 예쁘게 refactoring
+이슈 9: evaluate 함수 예쁘게 정리 + arr를 이용한 각 프로세스 별 waiting time, turnaround time 출력?
+이슈 10: 보고서 작성하면서 각 소스+헤더 리팩토링
+    할 때 선배들 보고서 참조

@@ -9,6 +9,8 @@ extern Queue wait_queue;
 extern Queue terminate_queue;
 extern Process running_process;
 
+void flip_io_interrupt(); //flip IS_IO
+bool show_io_interrupt(); //return IS_IO
 
 void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_slice);
 //priority 

@@ -11,8 +11,6 @@
 #include "config.h" //Initialization, make clean
 #include "evaluate.h" //evaluation, Gantt chart
 
-
-
 //initialize
 //used as external variable at other source file
 Queue source_job_queue = NULL;
@@ -22,11 +20,13 @@ Queue wait_queue = NULL;
 Queue terminate_queue = NULL;
 Process running_process = NULL;
 
+//get one decimal input from user
 int get_number_input();
+
 //script_ : print notice, if any value needed, get those
 void script_prologue();
 void script_algorithm();
-void script_custom_sch();
+void script_custom_sch(int *);
 void script_round_robin(int *time);
 void script_unix(int *first, int *second);
 
@@ -82,24 +82,19 @@ int main(void){
                         unix_scheduling(base_priority, time_slice_);
                         break;
                     case 8:
-                        script_custom_sch();
                         int custom[4];
-                        for(int i = 0; i<4; i++){
-                            printf("Input for %dth parameter: ", i);
-                            custom[i] = get_number_input();
-                        }
+                        script_custom_sch(custom);
                         custom_scheduling(custom[0], custom[1], custom[2], custom[3]);
                         break;
+                    case 9:
+                        flip_io_interrupt();
+                        continue;
+                    case 10:
+                        queue_show(source_job_queue);
+                        continue;
                     }
-
-                //print result of scheduling
-                evaluate_gantt_chart(terminate_queue);
-                //terminate_queue의 사이즈만큼 배열을 줘야 함
-                int size = queue_size(terminate_queue);
-                int *arr = malloc(sizeof(int) * size);
-                printf("average waiting time is %d\n", evaluate_waiting_time(terminate_queue, arr));
-                printf("average turnaround time is %d\n", evaluate_turnaround_time(terminate_queue, arr));
-                free(arr);
+                
+                evaluate_algorithm();
 
                 config_clean();
             }
@@ -146,16 +141,24 @@ void script_algorithm(){
     printf("6. Round Robin\n");
     printf("7. Unix_Scheduling(Dynamic Priority)\n");
     printf("8. Your Custom Scheduling\n");
+    printf("\n9. Flip io interrupt. Current status : %s\n", show_io_interrupt() ? "true" : "false");
+    printf("10. Show current processes\n");
     printf("0. Back to process create step\n");
     printf("Choice: ");
 }
-void script_custom_sch(){
+void script_custom_sch(int *custom){
     printf("\nWe need 4 parameter: priority, preemption, sjf, time_slice\n");
     printf("Give 0 or 1 regarding each parameter except time_slice\n");
     printf("Give natural number for time_slice used for RR\n");
+    for(int i = 0; i<4; i++){
+        printf("Input for %dth parameter: ", i);
+        custom[i] = get_number_input();
+    }
 }
 void script_round_robin(int *time){
-    printf("\nGive natural number for time_slice used for RR: ");
+    printf("\nCurrent max burst time is %d\n", MAX_TIME);
+    printf("Be cautious that too long or short time_slice makes algorithm uneffective\n");
+    printf("Give natural number for time_slice used for RR: ");
     while((*time = get_number_input()) <= 0){
         printf("Invalid input. Input for ime_slice: ");
     }
@@ -168,6 +171,8 @@ void script_unix(int *first, int *second){
     while((*first = get_number_input()) < 0){
         printf("Invalid input. Input for base priority: ");
     }
+    printf("Current max burst time is %d\n", MAX_TIME);
+    printf("Be cautious that too long or short time_slice makes algorithm uneffective\n");
     printf("Input for time_slice: ");
     while((*second = get_number_input()) <= 0){
         printf("Invalid input. Input for time_slice: ");

@@ -5,8 +5,6 @@
 #include "process.h"
 
 //caution!! : MAX_TIME should not be too big, compared to INT_MAX
-#define MAX_TIME 20
-
 
 int p_index = 0;
 
@@ -39,7 +37,7 @@ Process process_create(){
     p->io_end_time = 0;
     p->start_time = 0;
     p->end_time = 0;
-    p->priority = rand()%MAX_TIME;
+    p->priority = rand()%MAX_TIME; //프로세스 개수 만큼은 있어야 다양성 보장
     
     return p;
 }
@@ -52,7 +50,7 @@ void process_show(Process p){
         return;
     }
     printf("process_index is %d\n", p->process_index);
-    //printf("process_id is %d\n", p->process_id);
+    printf("process_id is %d\n", p->process_id);
     printf("arrival_time is %u\n", p->arrival_time);
     printf("cpu burst time is %u\n", p->cpu_burst_time);
     //printf("io_start_time is %u\n", p->io_start_time);
