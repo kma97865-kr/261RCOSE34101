@@ -223,3 +223,15 @@ void wait_queue_push(Queue q, Process i){ //use io end time as priority
     }
     q->count++;
 }
+
+void queue_copy(Queue sq, Queue dq){
+    if(queue_is_empty(sq)) return;
+
+    Node temp_node = queue_front_node(sq);
+    while(temp_node != NULL){
+        Process dq_process = process_create();
+        process_copy(queue_node_get_data(temp_node), dq_process);
+        queue_push(dq, dq_process);
+        temp_node = queue_node_next_node(temp_node);
+    }
+}

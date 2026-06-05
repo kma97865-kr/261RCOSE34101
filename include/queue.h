@@ -41,4 +41,7 @@ void priority_queue_push(Queue q, Process i);
 
 //wait queue : use io end time as priority
 void wait_queue_push(Queue q, Process i);
+
+//sq : source queue, dq : dest queue
+void queue_copy(Queue sq, Queue dq);
 #endif

@@ -13,21 +13,22 @@ extern Process runnning_process;*/
 
 extern int p_index;
 
-void config_initialize(void){
-    job_queue = queue_create();
-    ready_queue = queue_create();
-    wait_queue = queue_create();
-    terminate_queue = queue_create();
-} //create extern values
-
-
-void config_create_process(int n){
+void config_initialize_source(int n){
+    source_job_queue = queue_create();
     p_index = 0;
     for(int i = 0; i<n; i++){
         Process temp = process_create();
-        queue_push(job_queue, temp);
-    }
-} //create n process and push into job queue
+        queue_push(source_job_queue, temp);
+    }//create n process and push into source_job_queue
+}
+
+void config_initialize(void){
+    job_queue = queue_create();
+    queue_copy(source_job_queue, job_queue);
+    ready_queue = queue_create();
+    wait_queue = queue_create();
+    terminate_queue = queue_create();
+} //create extern values, initialize job_queue
 
 void config_create_test_process(){
     int arrival[4] = {0, 1,4,6};
@@ -54,3 +55,8 @@ void config_clean(){
     queue_destroy(&wait_queue);
     queue_destroy(&terminate_queue);
 }//deallocate all -> destroy extern values
+
+void config_clean_source(){
+    queue_make_empty(source_job_queue);
+    queue_destroy(&source_job_queue);
+}

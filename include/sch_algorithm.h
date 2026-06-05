@@ -26,7 +26,7 @@ void preemptive_sjf();
 
 void round_robin(int time_slice);
 
-void custom_scheudling(bool priority, bool preemption, bool sjf, int time_slice);
+void custom_scheduling(bool priority, bool preemption, bool sjf, int time_slice);
 
 void unix_scheduling(int base_priority, int time_slice);
 #endif

@@ -42,7 +42,7 @@ static void setting_priority(Queue queue, int priority_change){ //queue 순회�
         if(IS_UNIX) new_priority = process_priority(temp_p) + priority_change;
         else new_priority = process_cpu_burst_time(temp_p); //sjf
 
-        //assume that priority >= base_priority
+        //at unix scheduling, assume that priority >= base_priority
         if(IS_UNIX && new_priority < BASE_PRIORITY) new_priority = BASE_PRIORITY;
 
         process_set_priority(temp_p, new_priority);
@@ -151,7 +151,7 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_sli
             temp_from_wait = wait_queue_to_ready(time);
         }
 
-        if(is_unix){//on the Unix scheduling, recalculate priority every TIME_TICK
+        if(is_unix){//at the Unix scheduling, recalculate priority every TIME_TICK
             if(time%TIME_TICK == 0){
                 //setting_priority(job_queue, -1 * TIME_TICK);
                 setting_priority(ready_queue, -1 * TIME_TICK);
@@ -264,7 +264,7 @@ void round_robin(int time_slice){
     scheduling_algorithm(false, false, false, time_slice);
 }
 
-void custom_scheudling(bool priority, bool preemption, bool sjf, int time_slice){
+void custom_scheduling(bool priority, bool preemption, bool sjf, int time_slice){
     if(sjf) priority = true;
     if(time_slice < 0){
         printf("TIME SLICE ERROR\n");
@@ -275,7 +275,7 @@ void custom_scheudling(bool priority, bool preemption, bool sjf, int time_slice)
 
 void unix_scheduling(int base_priority, int time_slice){
     IS_UNIX = true;
-    //job queue에 있는 priority에 base + nice 만큼 더해줌
+    //job queue에 있는 priority에 base 만큼 더해줌
     BASE_PRIORITY = base_priority;
     setting_priority(job_queue, base_priority);
     scheduling_algorithm(true, true, false, time_slice);
