@@ -21,7 +21,7 @@ int compare_arrival_time(const void *a, const void *b) { //응용 -> priority �
 //arrival time 대로 정렬->qsort함수 사용
 void job_queue_sort(void){
     //job_queue에 있는 프로세스 수 만큼 Process 동적 배열을 하나 만들고
-    int count = queue_count(job_queue);
+    int count = queue_size(job_queue);
     Node *nodearr = malloc(sizeof(Node) * count);
     if (nodearr == NULL) {
         printf("동적 배열 메모리 할당 실패");
@@ -30,11 +30,11 @@ void job_queue_sort(void){
 
     Node temp = queue_front_node(job_queue);
     for(int i = 0; i<count; i++){
-        //printf("i is %d\n", i);
+        //배열에 연결 리스트를 복사
         nodearr[i] = temp;
         temp = queue_node_next_node(temp);
     }
-    //개네를 qsort 시킨 다음
+    //배열을 qsort 시킨 다음
     /*void qsort(
     void *base,   // 1. 정렬할 배열의 시작 주소
     size_t nmemb, // 2. 배열의 데이터 개수
@@ -42,11 +42,6 @@ void job_queue_sort(void){
     int (*compar)(const void *, const void *) // 4. 두 값을 비교하는 커스텀 함수
     );*/
     qsort(nodearr, count, sizeof(Node), compare_arrival_time);
-
-    /*for(int i = 0; i<count; i++){
-        process_show(queue_node_get_data(nodearr[i]));
-        printf("\n");
-    }*/
 
     //다시 연결 리스트로 만들어 준다.
     //job_queue를 부수고 다시 만들 필요 없이, next만 잘 이어주면 된다

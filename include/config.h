@@ -13,7 +13,7 @@ extern Process runnning_process;
 
 void config_initialize_source(int n); //create source_job_queue
 void config_initialize(void); //create extern values
-void config_create_test_process();
+void config_create_test_process(); //for debug
 
 void config_clean(); //deallocate all -> destroy extern values
 void config_clean_source();

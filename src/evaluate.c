@@ -22,7 +22,6 @@ int evaluate_waiting_time(Queue q, int *arr){
         end_last_arr[index] = (int) process_end_time(temp_p);
         arrival_time[index] = (int) process_arrival_time(temp_p);
 
-
         //around the queue
         temp = queue_node_next_node(temp);
     }
@@ -91,9 +90,9 @@ void evaluate_gantt_chart(Queue q) {
     }
 
     //printf("\n[ CPU Scheduling Timeline ]\n");
-    printf("============================================================\n");
-    printf("   TIME   |  PROCESS  |  Arrival time  |  Priority  | Remaining time | I/O start | I/O end |\n");
-    printf("------------------------------------------------------------\n");
+    printf("==================================================================================================\n");
+    printf("    TIME    |  PROCESS  |  Arrival time  |  Priority  | Remaining time |  I/O start  |  I/O end  |\n");
+    printf("--------------------------------------------------------------------------------------------------\n");
 
     Node curr_node = queue_front_node(q);
     int current_time = 0;
@@ -103,19 +102,18 @@ void evaluate_gantt_chart(Queue q) {
 
         // IDLE 발생 시
         if (current_time < (int)process_start_time(p)) {
-            // %3d를 쓰면 숫자가 3칸을 차지하여 예쁘게 정렬됩니다.
-            printf(" %3d ~ %-3d  |  IDLE \n", current_time, process_start_time(p));
+            printf(" %3d ~ %-3d  |   IDLE \n", current_time, process_start_time(p));
             current_time = process_start_time(p);
         }
 
         // 프로세스 실행 구간
-        printf(" %3d ~ %-3d  |  [ P%-2d ]  |  %-2d  |  %-2d  |  %-2d  |  %-2d  |  %-2d  |\n", 
+        printf(" %3d ~ %-3d  |  [ P%-2d ]  |       %-2d       |     %-2d     |       %-2d       |      %-3d    |     %-3d   |\n", 
             process_start_time(p), process_end_time(p), process_index(p), process_arrival_time(p), 
             process_priority(p), process_cpu_burst_time(p), process_io_start_time(p), process_io_end_time(p));
         current_time = process_end_time(p);
         curr_node = queue_node_next_node(curr_node);
     }
-    printf("==========================================================\n");
+    printf("==================================================================================================\n");
 }
 
 void evaluate_algorithm(){

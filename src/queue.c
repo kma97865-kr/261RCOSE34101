@@ -88,10 +88,7 @@ Process queue_front_process(Queue q){
     return q->front->data;
 }
 
-int queue_count(Queue q){
-    if(queue_is_empty(q)) return 0;
-    return q->count;
-}
+//if queue is NULL, return NULL node.
 Node queue_front_node(Queue q){
     if(queue_is_empty(q)) return NULL;
     return q->front;
@@ -224,6 +221,7 @@ void wait_queue_push(Queue q, Process i){ //use io end time as priority
     q->count++;
 }
 
+//sq : source queue, dq : dest queue
 void queue_copy(Queue sq, Queue dq){
     if(queue_is_empty(sq)) return;
 

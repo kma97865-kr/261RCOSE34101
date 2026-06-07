@@ -7,9 +7,9 @@
 #include "running_process.h"
 #include "sch_algorithm.h"
 #include "wait_queue.h"
-#define TIME_TICK (1 * BASE_TICK) //UNIX scheduling, recalculate priority every TIME_TICK
+#define TIME_TICK (1 * BASE_TICK) //for UNIX scheduling, recalculate priority every TIME_TICK
 #define MAX_IO_TIME (5 * BASE_TICK) //IO burst time
-#define PROBABILITY (MAX_TIME) // IO burst probability, 1/50
+#define PROBABILITY (MAX_TIME) // IO burst probability
 //static 전역 변수 : 이 소스코드 외에서 사용하지 않음
 static bool IS_UNIX = false;
 static bool IS_IO = true;
@@ -34,7 +34,7 @@ static int check_priority_preemption(){
     int p2 = process_priority(queue_front_process(ready_queue));
     return (p1 - p2 > 0) ? 1 : 0;
 }
-static void setting_priority(Queue queue, int priority_change){ //queue 순회하면서 priority를 갱신
+static void setting_priority(Queue queue, int priority_change){ //for sjf, unix. queue 순회하면서 priority를 갱신
     Node temp_node = queue_front_node(queue);
     Process temp_p;
     while(temp_node != NULL){
@@ -165,7 +165,7 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_sli
                 //setting_priority(job_queue, -1 * TIME_TICK);
                 setting_priority(ready_queue, -1 * TIME_TICK);
                 setting_priority(wait_queue, -1 * TIME_TICK);
-                //increase CPU_usage of running_process
+                //lower priority of running_process
                 if(running_process != NULL) process_set_priority(running_process, process_priority(running_process) + TIME_TICK);
             }
         }
@@ -198,7 +198,7 @@ void scheduling_algorithm(bool priority, bool preemption, bool sjf, int time_sli
                         running_process = NULL;
                         check_ready_put_running(time, &consumed_time);
 
-                        //if interrupt and replace are occured, nothing to do more in this time
+                        //if interrupt and replace are occured, nothing to do more at this time
                         continue;      
                     }
                     //Interrupt not occured -> do nothing here, continue below code
@@ -274,7 +274,10 @@ void round_robin(int time_slice){
 }
 
 void custom_scheduling(bool priority, bool preemption, bool sjf, int time_slice){
-    if(sjf) priority = true;
+    if(sjf){
+        priority = true;
+        setting_priority(job_queue, 0);
+    }
     if(time_slice < 0){
         printf("TIME SLICE ERROR\n");
         return;

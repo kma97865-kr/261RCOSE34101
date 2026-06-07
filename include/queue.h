@@ -9,6 +9,7 @@
 typedef struct _queue *Queue;
 typedef struct node *Node;
 
+//Initialize
 Queue queue_create(void);
 void queue_destroy(Queue *pq); //double pointer
 void queue_make_empty(Queue q);
@@ -16,17 +17,14 @@ bool queue_is_empty(Queue q);
 bool queue_is_full(Queue q);
 void queue_push(Queue q, Process i);
 Process queue_pop(Queue q);
-//
-Process queue_front_process(Queue q);
-int queue_count(Queue q);
 
-//if queue is NULL, return NULL node.
-Node queue_front_node(Queue q);
-
-//
+//Debug
 void queue_show(Queue q);
 
 //GETTER
+Process queue_front_process(Queue q);
+Node queue_front_node(Queue q);
+
 Process queue_node_get_data(Node n);
 Node queue_node_next_node(Node n);
 int queue_size(Queue q);
@@ -42,6 +40,6 @@ void priority_queue_push(Queue q, Process i);
 //wait queue : use io end time as priority
 void wait_queue_push(Queue q, Process i);
 
-//sq : source queue, dq : dest queue
+//Others
 void queue_copy(Queue sq, Queue dq);
 #endif

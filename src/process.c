@@ -16,7 +16,6 @@ struct _process{
     unsigned int io_start_time;//io interrupt
     unsigned int io_end_time;
     int priority;
-
     unsigned int start_time;//time on running
     unsigned int end_time;//(might be partial)
 };
@@ -91,6 +90,8 @@ unsigned int process_end_time(Process p){
     return p->end_time;
 }
 
+//decrease cpu_burst_time for time i;
+//if fail, return -1. else, return remaining burst time
 int process_cpu_time_consume(Process p, int i){
     if(p->cpu_burst_time < (unsigned int) i) {
         printf("process_cpu_time_consume Error\n");
@@ -131,6 +132,8 @@ void process_set_io_end_time(Process p, unsigned int u){
     if(p == NULL) return;
     p->io_end_time = u;
 }
+
+//
 void process_copy(Process source, Process target){
     *target = *source;
 }

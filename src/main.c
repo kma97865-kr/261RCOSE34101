@@ -27,8 +27,8 @@ int get_number_input();
 void script_prologue();
 void script_algorithm();
 void script_custom_sch(int *);
-void script_round_robin(int *time);
-void script_unix(int *first, int *second);
+void script_round_robin(int *);
+void script_unix(int *, int *);
 
 int main(void){
     srand((unsigned int)time(NULL));
